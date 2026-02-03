@@ -347,14 +347,21 @@ func (r *Fetch) Assignment(ids ...int) *assignmentBuilder {
 
 // AssignmentCandidate has all fields from assignment_candidate.
 type AssignmentCandidate struct {
-	AssignmentID  int
-	ID            int
-	MeetingID     int
-	MeetingUserID dsfetch.Maybe[int]
-	Weight        int
-	Assignment    *Assignment
-	Meeting       *Meeting
-	MeetingUser   *dsfetch.Maybe[MeetingUser]
+	Application                    string
+	AssignmentID                   int
+	AttachmentMeetingMediafileIDs  []int
+	ID                             int
+	ListOfSpeakersID               int
+	MeetingID                      int
+	MeetingUserID                  dsfetch.Maybe[int]
+	ProjectionIDs                  []int
+	Weight                         int
+	Assignment                     *Assignment
+	AttachmentMeetingMediafileList []MeetingMediafile
+	ListOfSpeakers                 *ListOfSpeakers
+	Meeting                        *Meeting
+	MeetingUser                    *dsfetch.Maybe[MeetingUser]
+	ProjectionList                 []Projection
 }
 
 type assignmentCandidateBuilder struct {
@@ -363,10 +370,14 @@ type assignmentCandidateBuilder struct {
 
 func (b *assignmentCandidateBuilder) lazy(ds *Fetch, id int) *AssignmentCandidate {
 	c := AssignmentCandidate{}
+	ds.AssignmentCandidate_Application(id).Lazy(&c.Application)
 	ds.AssignmentCandidate_AssignmentID(id).Lazy(&c.AssignmentID)
+	ds.AssignmentCandidate_AttachmentMeetingMediafileIDs(id).Lazy(&c.AttachmentMeetingMediafileIDs)
 	ds.AssignmentCandidate_ID(id).Lazy(&c.ID)
+	ds.AssignmentCandidate_ListOfSpeakersID(id).Lazy(&c.ListOfSpeakersID)
 	ds.AssignmentCandidate_MeetingID(id).Lazy(&c.MeetingID)
 	ds.AssignmentCandidate_MeetingUserID(id).Lazy(&c.MeetingUserID)
+	ds.AssignmentCandidate_ProjectionIDs(id).Lazy(&c.ProjectionIDs)
 	ds.AssignmentCandidate_Weight(id).Lazy(&c.Weight)
 	return &c
 }
@@ -383,6 +394,29 @@ func (b *assignmentCandidateBuilder) Assignment() *assignmentBuilder {
 			parent:   b,
 			idField:  "AssignmentID",
 			relField: "Assignment",
+		},
+	}
+}
+
+func (b *assignmentCandidateBuilder) AttachmentMeetingMediafileList() *meetingMediafileBuilder {
+	return &meetingMediafileBuilder{
+		builder: builder[meetingMediafileBuilder, *meetingMediafileBuilder, MeetingMediafile]{
+			fetch:    b.fetch,
+			parent:   b,
+			idField:  "AttachmentMeetingMediafileIDs",
+			relField: "AttachmentMeetingMediafileList",
+			many:     true,
+		},
+	}
+}
+
+func (b *assignmentCandidateBuilder) ListOfSpeakers() *listOfSpeakersBuilder {
+	return &listOfSpeakersBuilder{
+		builder: builder[listOfSpeakersBuilder, *listOfSpeakersBuilder, ListOfSpeakers]{
+			fetch:    b.fetch,
+			parent:   b,
+			idField:  "ListOfSpeakersID",
+			relField: "ListOfSpeakers",
 		},
 	}
 }
@@ -405,6 +439,18 @@ func (b *assignmentCandidateBuilder) MeetingUser() *meetingUserBuilder {
 			parent:   b,
 			idField:  "MeetingUserID",
 			relField: "MeetingUser",
+		},
+	}
+}
+
+func (b *assignmentCandidateBuilder) ProjectionList() *projectionBuilder {
+	return &projectionBuilder{
+		builder: builder[projectionBuilder, *projectionBuilder, Projection]{
+			fetch:    b.fetch,
+			parent:   b,
+			idField:  "ProjectionIDs",
+			relField: "ProjectionList",
+			many:     true,
 		},
 	}
 }

@@ -923,6 +923,15 @@ func (r *Fetch) AgendaItem_Weight(agendaItemID int) *ValueInt {
 	return &ValueInt{fetch: r, key: key}
 }
 
+func (r *Fetch) AssignmentCandidate_Application(assignmentCandidateID int) *ValueString {
+	key, err := dskey.FromParts("assignment_candidate", assignmentCandidateID, "application")
+	if err != nil {
+		return &ValueString{err: err}
+	}
+
+	return &ValueString{fetch: r, key: key}
+}
+
 func (r *Fetch) AssignmentCandidate_AssignmentID(assignmentCandidateID int) *ValueInt {
 	key, err := dskey.FromParts("assignment_candidate", assignmentCandidateID, "assignment_id")
 	if err != nil {
@@ -932,8 +941,26 @@ func (r *Fetch) AssignmentCandidate_AssignmentID(assignmentCandidateID int) *Val
 	return &ValueInt{fetch: r, key: key, required: true}
 }
 
+func (r *Fetch) AssignmentCandidate_AttachmentMeetingMediafileIDs(assignmentCandidateID int) *ValueIntSlice {
+	key, err := dskey.FromParts("assignment_candidate", assignmentCandidateID, "attachment_meeting_mediafile_ids")
+	if err != nil {
+		return &ValueIntSlice{err: err}
+	}
+
+	return &ValueIntSlice{fetch: r, key: key}
+}
+
 func (r *Fetch) AssignmentCandidate_ID(assignmentCandidateID int) *ValueInt {
 	key, err := dskey.FromParts("assignment_candidate", assignmentCandidateID, "id")
+	if err != nil {
+		return &ValueInt{err: err}
+	}
+
+	return &ValueInt{fetch: r, key: key, required: true}
+}
+
+func (r *Fetch) AssignmentCandidate_ListOfSpeakersID(assignmentCandidateID int) *ValueInt {
+	key, err := dskey.FromParts("assignment_candidate", assignmentCandidateID, "list_of_speakers_id")
 	if err != nil {
 		return &ValueInt{err: err}
 	}
@@ -957,6 +984,15 @@ func (r *Fetch) AssignmentCandidate_MeetingUserID(assignmentCandidateID int) *Va
 	}
 
 	return &ValueMaybeInt{fetch: r, key: key}
+}
+
+func (r *Fetch) AssignmentCandidate_ProjectionIDs(assignmentCandidateID int) *ValueIntSlice {
+	key, err := dskey.FromParts("assignment_candidate", assignmentCandidateID, "projection_ids")
+	if err != nil {
+		return &ValueIntSlice{err: err}
+	}
+
+	return &ValueIntSlice{fetch: r, key: key}
 }
 
 func (r *Fetch) AssignmentCandidate_Weight(assignmentCandidateID int) *ValueInt {
