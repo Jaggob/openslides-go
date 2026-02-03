@@ -9,6 +9,7 @@ var RelationFields = map[string]string{
 	"assignment/agenda_item_id":                                              "agenda_item/content_object_id",
 	"assignment/list_of_speakers_id":                                         "list_of_speakers/content_object_id",
 	"assignment/meeting_id":                                                  "meeting/assignment_ids",
+	"assignment_candidate/agenda_item_id":                                    "agenda_item/content_object_id",
 	"assignment_candidate/assignment_id":                                     "assignment/candidate_ids",
 	"assignment_candidate/list_of_speakers_id":                               "list_of_speakers/content_object_id",
 	"assignment_candidate/meeting_id":                                        "meeting/assignment_candidate_ids",
@@ -386,7 +387,7 @@ var RelationListFields = map[string]string{
 // GenericRelationFields is a map from are all (single) generic relation fields
 // to the fields, there relate to.
 var GenericRelationFields = map[string]map[string]string{
-	"agenda_item/content_object_id":      {"assignment": "agenda_item_id", "motion": "agenda_item_id", "motion_block": "agenda_item_id", "topic": "agenda_item_id"},
+	"agenda_item/content_object_id":      {"assignment": "agenda_item_id", "assignment_candidate": "agenda_item_id", "motion": "agenda_item_id", "motion_block": "agenda_item_id", "topic": "agenda_item_id"},
 	"history_entry/model_id":             {"assignment": "history_entry_ids", "motion": "history_entry_ids", "user": "history_entry_ids"},
 	"list_of_speakers/content_object_id": {"assignment": "list_of_speakers_id", "assignment_candidate": "list_of_speakers_id", "meeting_mediafile": "list_of_speakers_id", "motion": "list_of_speakers_id", "motion_block": "list_of_speakers_id", "topic": "list_of_speakers_id"},
 	"mediafile/owner_id":                 {"meeting": "mediafile_ids", "organization": "mediafile_ids"},
@@ -455,6 +456,7 @@ var RestrictionModes = map[string]string{
 	"assignment/title":                            "A",
 
 	// assignment_candidate
+	"assignment_candidate/agenda_item_id":                   "A",
 	"assignment_candidate/application":                      "A",
 	"assignment_candidate/assignment_id":                    "A",
 	"assignment_candidate/attachment_meeting_mediafile_ids": "A",
@@ -614,6 +616,7 @@ var RestrictionModes = map[string]string{
 	"meeting/assignment_poll_default_type":                          "B",
 	"meeting/assignment_poll_enable_max_votes_per_option":           "B",
 	"meeting/assignment_poll_sort_poll_result_by_votes":             "B",
+	"meeting/assignments_enable_candidate_applications":             "B",
 	"meeting/assignments_export_preamble":                           "B",
 	"meeting/assignments_export_title":                              "B",
 	"meeting/chat_group_ids":                                        "B",

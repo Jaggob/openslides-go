@@ -347,6 +347,7 @@ func (r *Fetch) Assignment(ids ...int) *assignmentBuilder {
 
 // AssignmentCandidate has all fields from assignment_candidate.
 type AssignmentCandidate struct {
+	AgendaItemID                   dsfetch.Maybe[int]
 	Application                    string
 	AssignmentID                   int
 	AttachmentMeetingMediafileIDs  []int
@@ -356,6 +357,7 @@ type AssignmentCandidate struct {
 	MeetingUserID                  dsfetch.Maybe[int]
 	ProjectionIDs                  []int
 	Weight                         int
+	AgendaItem                     *dsfetch.Maybe[AgendaItem]
 	Assignment                     *Assignment
 	AttachmentMeetingMediafileList []MeetingMediafile
 	ListOfSpeakers                 *ListOfSpeakers
@@ -370,6 +372,7 @@ type assignmentCandidateBuilder struct {
 
 func (b *assignmentCandidateBuilder) lazy(ds *Fetch, id int) *AssignmentCandidate {
 	c := AssignmentCandidate{}
+	ds.AssignmentCandidate_AgendaItemID(id).Lazy(&c.AgendaItemID)
 	ds.AssignmentCandidate_Application(id).Lazy(&c.Application)
 	ds.AssignmentCandidate_AssignmentID(id).Lazy(&c.AssignmentID)
 	ds.AssignmentCandidate_AttachmentMeetingMediafileIDs(id).Lazy(&c.AttachmentMeetingMediafileIDs)
@@ -385,6 +388,17 @@ func (b *assignmentCandidateBuilder) lazy(ds *Fetch, id int) *AssignmentCandidat
 func (b *assignmentCandidateBuilder) Preload(rel builderWrapperI) *assignmentCandidateBuilder {
 	b.builder.Preload(rel)
 	return b
+}
+
+func (b *assignmentCandidateBuilder) AgendaItem() *agendaItemBuilder {
+	return &agendaItemBuilder{
+		builder: builder[agendaItemBuilder, *agendaItemBuilder, AgendaItem]{
+			fetch:    b.fetch,
+			parent:   b,
+			idField:  "AgendaItemID",
+			relField: "AgendaItem",
+		},
+	}
 }
 
 func (b *assignmentCandidateBuilder) Assignment() *assignmentBuilder {
@@ -1583,6 +1597,7 @@ type Meeting struct {
 	AssignmentPollDefaultType                    string
 	AssignmentPollEnableMaxVotesPerOption        bool
 	AssignmentPollSortPollResultByVotes          bool
+	AssignmentsEnableCandidateApplications       bool
 	AssignmentsExportPreamble                    string
 	AssignmentsExportTitle                       string
 	ChatGroupIDs                                 []int
@@ -1925,6 +1940,7 @@ func (b *meetingBuilder) lazy(ds *Fetch, id int) *Meeting {
 	ds.Meeting_AssignmentPollDefaultType(id).Lazy(&c.AssignmentPollDefaultType)
 	ds.Meeting_AssignmentPollEnableMaxVotesPerOption(id).Lazy(&c.AssignmentPollEnableMaxVotesPerOption)
 	ds.Meeting_AssignmentPollSortPollResultByVotes(id).Lazy(&c.AssignmentPollSortPollResultByVotes)
+	ds.Meeting_AssignmentsEnableCandidateApplications(id).Lazy(&c.AssignmentsEnableCandidateApplications)
 	ds.Meeting_AssignmentsExportPreamble(id).Lazy(&c.AssignmentsExportPreamble)
 	ds.Meeting_AssignmentsExportTitle(id).Lazy(&c.AssignmentsExportTitle)
 	ds.Meeting_ChatGroupIDs(id).Lazy(&c.ChatGroupIDs)
