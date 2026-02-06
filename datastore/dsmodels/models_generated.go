@@ -1412,12 +1412,14 @@ type Mediafile struct {
 	OwnerID                             string
 	ParentID                            dsfetch.Maybe[int]
 	PdfInformation                      json.RawMessage
+	ProfileImageUserIDs                 []int
 	PublishedToMeetingsInOrganizationID dsfetch.Maybe[int]
 	Title                               string
 	Token                               string
 	ChildList                           []Mediafile
 	MeetingMediafileList                []MeetingMediafile
 	Parent                              *dsfetch.Maybe[Mediafile]
+	ProfileImageUserList                []User
 	PublishedToMeetingsInOrganization   *dsfetch.Maybe[Organization]
 }
 
@@ -1438,6 +1440,7 @@ func (b *mediafileBuilder) lazy(ds *Fetch, id int) *Mediafile {
 	ds.Mediafile_OwnerID(id).Lazy(&c.OwnerID)
 	ds.Mediafile_ParentID(id).Lazy(&c.ParentID)
 	ds.Mediafile_PdfInformation(id).Lazy(&c.PdfInformation)
+	ds.Mediafile_ProfileImageUserIDs(id).Lazy(&c.ProfileImageUserIDs)
 	ds.Mediafile_PublishedToMeetingsInOrganizationID(id).Lazy(&c.PublishedToMeetingsInOrganizationID)
 	ds.Mediafile_Title(id).Lazy(&c.Title)
 	ds.Mediafile_Token(id).Lazy(&c.Token)
@@ -1480,6 +1483,18 @@ func (b *mediafileBuilder) Parent() *mediafileBuilder {
 			parent:   b,
 			idField:  "ParentID",
 			relField: "Parent",
+		},
+	}
+}
+
+func (b *mediafileBuilder) ProfileImageUserList() *userBuilder {
+	return &userBuilder{
+		builder: builder[userBuilder, *userBuilder, User]{
+			fetch:    b.fetch,
+			parent:   b,
+			idField:  "ProfileImageUserIDs",
+			relField: "ProfileImageUserList",
+			many:     true,
 		},
 	}
 }
@@ -7398,6 +7413,7 @@ type User struct {
 	Password                    string
 	PollCandidateIDs            []int
 	PollVotedIDs                []int
+	ProfileImageID              dsfetch.Maybe[int]
 	Pronoun                     string
 	SamlID                      string
 	Title                       string
@@ -7416,6 +7432,7 @@ type User struct {
 	Organization                *Organization
 	PollCandidateList           []PollCandidate
 	PollVotedList               []Poll
+	ProfileImage                *dsfetch.Maybe[Mediafile]
 	VoteList                    []Vote
 }
 
@@ -7455,6 +7472,7 @@ func (b *userBuilder) lazy(ds *Fetch, id int) *User {
 	ds.User_Password(id).Lazy(&c.Password)
 	ds.User_PollCandidateIDs(id).Lazy(&c.PollCandidateIDs)
 	ds.User_PollVotedIDs(id).Lazy(&c.PollVotedIDs)
+	ds.User_ProfileImageID(id).Lazy(&c.ProfileImageID)
 	ds.User_Pronoun(id).Lazy(&c.Pronoun)
 	ds.User_SamlID(id).Lazy(&c.SamlID)
 	ds.User_Title(id).Lazy(&c.Title)
@@ -7617,6 +7635,17 @@ func (b *userBuilder) PollVotedList() *pollBuilder {
 			idField:  "PollVotedIDs",
 			relField: "PollVotedList",
 			many:     true,
+		},
+	}
+}
+
+func (b *userBuilder) ProfileImage() *mediafileBuilder {
+	return &mediafileBuilder{
+		builder: builder[mediafileBuilder, *mediafileBuilder, Mediafile]{
+			fetch:    b.fetch,
+			parent:   b,
+			idField:  "ProfileImageID",
+			relField: "ProfileImage",
 		},
 	}
 }

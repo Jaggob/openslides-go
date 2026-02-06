@@ -1940,6 +1940,15 @@ func (r *Fetch) Mediafile_PdfInformation(mediafileID int) *ValueJSON {
 	return &ValueJSON{fetch: r, key: key}
 }
 
+func (r *Fetch) Mediafile_ProfileImageUserIDs(mediafileID int) *ValueIntSlice {
+	key, err := dskey.FromParts("mediafile", mediafileID, "profile_image_user_ids")
+	if err != nil {
+		return &ValueIntSlice{err: err}
+	}
+
+	return &ValueIntSlice{fetch: r, key: key}
+}
+
 func (r *Fetch) Mediafile_PublishedToMeetingsInOrganizationID(mediafileID int) *ValueMaybeInt {
 	key, err := dskey.FromParts("mediafile", mediafileID, "published_to_meetings_in_organization_id")
 	if err != nil {
@@ -8652,6 +8661,15 @@ func (r *Fetch) User_PollVotedIDs(userID int) *ValueIntSlice {
 	}
 
 	return &ValueIntSlice{fetch: r, key: key}
+}
+
+func (r *Fetch) User_ProfileImageID(userID int) *ValueMaybeInt {
+	key, err := dskey.FromParts("user", userID, "profile_image_id")
+	if err != nil {
+		return &ValueMaybeInt{err: err}
+	}
+
+	return &ValueMaybeInt{fetch: r, key: key}
 }
 
 func (r *Fetch) User_Pronoun(userID int) *ValueString {
