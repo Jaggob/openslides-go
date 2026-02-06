@@ -1412,14 +1412,14 @@ type Mediafile struct {
 	OwnerID                             string
 	ParentID                            dsfetch.Maybe[int]
 	PdfInformation                      json.RawMessage
-	ProfileImageUserIDs                 []int
+	ProfileImageIDs                     []int
 	PublishedToMeetingsInOrganizationID dsfetch.Maybe[int]
 	Title                               string
 	Token                               string
 	ChildList                           []Mediafile
 	MeetingMediafileList                []MeetingMediafile
 	Parent                              *dsfetch.Maybe[Mediafile]
-	ProfileImageUserList                []User
+	ProfileImageList                    []ProfileImage
 	PublishedToMeetingsInOrganization   *dsfetch.Maybe[Organization]
 }
 
@@ -1440,7 +1440,7 @@ func (b *mediafileBuilder) lazy(ds *Fetch, id int) *Mediafile {
 	ds.Mediafile_OwnerID(id).Lazy(&c.OwnerID)
 	ds.Mediafile_ParentID(id).Lazy(&c.ParentID)
 	ds.Mediafile_PdfInformation(id).Lazy(&c.PdfInformation)
-	ds.Mediafile_ProfileImageUserIDs(id).Lazy(&c.ProfileImageUserIDs)
+	ds.Mediafile_ProfileImageIDs(id).Lazy(&c.ProfileImageIDs)
 	ds.Mediafile_PublishedToMeetingsInOrganizationID(id).Lazy(&c.PublishedToMeetingsInOrganizationID)
 	ds.Mediafile_Title(id).Lazy(&c.Title)
 	ds.Mediafile_Token(id).Lazy(&c.Token)
@@ -1487,13 +1487,13 @@ func (b *mediafileBuilder) Parent() *mediafileBuilder {
 	}
 }
 
-func (b *mediafileBuilder) ProfileImageUserList() *userBuilder {
-	return &userBuilder{
-		builder: builder[userBuilder, *userBuilder, User]{
+func (b *mediafileBuilder) ProfileImageList() *profileImageBuilder {
+	return &profileImageBuilder{
+		builder: builder[profileImageBuilder, *profileImageBuilder, ProfileImage]{
 			fetch:    b.fetch,
 			parent:   b,
-			idField:  "ProfileImageUserIDs",
-			relField: "ProfileImageUserList",
+			idField:  "ProfileImageIDs",
+			relField: "ProfileImageList",
 			many:     true,
 		},
 	}
@@ -6176,6 +6176,65 @@ func (r *Fetch) PollCandidateList(ids ...int) *pollCandidateListBuilder {
 	}
 }
 
+// ProfileImage has all fields from profile_image.
+type ProfileImage struct {
+	CreateTimestamp int
+	ID              int
+	MediafileID     int
+	UserID          int
+	Mediafile       *Mediafile
+	User            *User
+}
+
+type profileImageBuilder struct {
+	builder[profileImageBuilder, *profileImageBuilder, ProfileImage]
+}
+
+func (b *profileImageBuilder) lazy(ds *Fetch, id int) *ProfileImage {
+	c := ProfileImage{}
+	ds.ProfileImage_CreateTimestamp(id).Lazy(&c.CreateTimestamp)
+	ds.ProfileImage_ID(id).Lazy(&c.ID)
+	ds.ProfileImage_MediafileID(id).Lazy(&c.MediafileID)
+	ds.ProfileImage_UserID(id).Lazy(&c.UserID)
+	return &c
+}
+
+func (b *profileImageBuilder) Preload(rel builderWrapperI) *profileImageBuilder {
+	b.builder.Preload(rel)
+	return b
+}
+
+func (b *profileImageBuilder) Mediafile() *mediafileBuilder {
+	return &mediafileBuilder{
+		builder: builder[mediafileBuilder, *mediafileBuilder, Mediafile]{
+			fetch:    b.fetch,
+			parent:   b,
+			idField:  "MediafileID",
+			relField: "Mediafile",
+		},
+	}
+}
+
+func (b *profileImageBuilder) User() *userBuilder {
+	return &userBuilder{
+		builder: builder[userBuilder, *userBuilder, User]{
+			fetch:    b.fetch,
+			parent:   b,
+			idField:  "UserID",
+			relField: "User",
+		},
+	}
+}
+
+func (r *Fetch) ProfileImage(ids ...int) *profileImageBuilder {
+	return &profileImageBuilder{
+		builder: builder[profileImageBuilder, *profileImageBuilder, ProfileImage]{
+			ids:   ids,
+			fetch: r,
+		},
+	}
+}
+
 // Projection has all fields from projection.
 type Projection struct {
 	Content            json.RawMessage
@@ -7432,7 +7491,7 @@ type User struct {
 	Organization                *Organization
 	PollCandidateList           []PollCandidate
 	PollVotedList               []Poll
-	ProfileImage                *dsfetch.Maybe[Mediafile]
+	ProfileImage                *dsfetch.Maybe[ProfileImage]
 	VoteList                    []Vote
 }
 
@@ -7639,9 +7698,9 @@ func (b *userBuilder) PollVotedList() *pollBuilder {
 	}
 }
 
-func (b *userBuilder) ProfileImage() *mediafileBuilder {
-	return &mediafileBuilder{
-		builder: builder[mediafileBuilder, *mediafileBuilder, Mediafile]{
+func (b *userBuilder) ProfileImage() *profileImageBuilder {
+	return &profileImageBuilder{
+		builder: builder[profileImageBuilder, *profileImageBuilder, ProfileImage]{
 			fetch:    b.fetch,
 			parent:   b,
 			idField:  "ProfileImageID",

@@ -1940,8 +1940,8 @@ func (r *Fetch) Mediafile_PdfInformation(mediafileID int) *ValueJSON {
 	return &ValueJSON{fetch: r, key: key}
 }
 
-func (r *Fetch) Mediafile_ProfileImageUserIDs(mediafileID int) *ValueIntSlice {
-	key, err := dskey.FromParts("mediafile", mediafileID, "profile_image_user_ids")
+func (r *Fetch) Mediafile_ProfileImageIDs(mediafileID int) *ValueIntSlice {
+	key, err := dskey.FromParts("mediafile", mediafileID, "profile_image_ids")
 	if err != nil {
 		return &ValueIntSlice{err: err}
 	}
@@ -6933,6 +6933,42 @@ func (r *Fetch) Poll_Votesvalid(pollID int) *ValueDecimal {
 	}
 
 	return &ValueDecimal{fetch: r, key: key}
+}
+
+func (r *Fetch) ProfileImage_CreateTimestamp(profileImageID int) *ValueInt {
+	key, err := dskey.FromParts("profile_image", profileImageID, "create_timestamp")
+	if err != nil {
+		return &ValueInt{err: err}
+	}
+
+	return &ValueInt{fetch: r, key: key}
+}
+
+func (r *Fetch) ProfileImage_ID(profileImageID int) *ValueInt {
+	key, err := dskey.FromParts("profile_image", profileImageID, "id")
+	if err != nil {
+		return &ValueInt{err: err}
+	}
+
+	return &ValueInt{fetch: r, key: key, required: true}
+}
+
+func (r *Fetch) ProfileImage_MediafileID(profileImageID int) *ValueInt {
+	key, err := dskey.FromParts("profile_image", profileImageID, "mediafile_id")
+	if err != nil {
+		return &ValueInt{err: err}
+	}
+
+	return &ValueInt{fetch: r, key: key, required: true}
+}
+
+func (r *Fetch) ProfileImage_UserID(profileImageID int) *ValueInt {
+	key, err := dskey.FromParts("profile_image", profileImageID, "user_id")
+	if err != nil {
+		return &ValueInt{err: err}
+	}
+
+	return &ValueInt{fetch: r, key: key, required: true}
 }
 
 func (r *Fetch) Projection_Content(projectionID int) *ValueJSON {

@@ -142,6 +142,8 @@ var RelationFields = map[string]string{
 	"poll_candidate/user_id":                                                 "user/poll_candidate_ids",
 	"poll_candidate_list/meeting_id":                                         "meeting/poll_candidate_list_ids",
 	"poll_candidate_list/option_id":                                          "option/content_object_id",
+	"profile_image/mediafile_id":                                             "mediafile/profile_image_ids",
+	"profile_image/user_id":                                                  "user/profile_image_id",
 	"projection/current_projector_id":                                        "projector/current_projection_ids",
 	"projection/history_projector_id":                                        "projector/history_projection_ids",
 	"projection/meeting_id":                                                  "meeting/all_projection_ids",
@@ -184,7 +186,7 @@ var RelationFields = map[string]string{
 	"user/gender_id":                                                         "gender/user_ids",
 	"user/home_committee_id":                                                 "committee/native_user_ids",
 	"user/organization_id":                                                   "organization/user_ids",
-	"user/profile_image_id":                                                  "mediafile/profile_image_user_ids",
+	"user/profile_image_id":                                                  "profile_image/user_id",
 	"vote/delegated_user_id":                                                 "user/delegated_vote_ids",
 	"vote/meeting_id":                                                        "meeting/vote_ids",
 	"vote/option_id":                                                         "option/vote_ids",
@@ -231,7 +233,7 @@ var RelationListFields = map[string]string{
 	"list_of_speakers/structure_level_list_of_speakers_ids":    "structure_level_list_of_speakers/list_of_speakers_id",
 	"mediafile/child_ids":                                      "mediafile/parent_id",
 	"mediafile/meeting_mediafile_ids":                          "meeting_mediafile/mediafile_id",
-	"mediafile/profile_image_user_ids":                         "user/profile_image_id",
+	"mediafile/profile_image_ids":                              "profile_image/mediafile_id",
 	"meeting/agenda_item_ids":                                  "agenda_item/meeting_id",
 	"meeting/all_projection_ids":                               "projection/meeting_id",
 	"meeting/assignment_candidate_ids":                         "assignment_candidate/meeting_id",
@@ -570,7 +572,7 @@ var RestrictionModes = map[string]string{
 	"mediafile/owner_id":                                 "A",
 	"mediafile/parent_id":                                "A",
 	"mediafile/pdf_information":                          "A",
-	"mediafile/profile_image_user_ids":                   "A",
+	"mediafile/profile_image_ids":                        "A",
 	"mediafile/published_to_meetings_in_organization_id": "A",
 	"mediafile/title":                                    "A",
 	"mediafile/token":                                    "A",
@@ -1171,6 +1173,12 @@ var RestrictionModes = map[string]string{
 	"poll_candidate_list/meeting_id":         "A",
 	"poll_candidate_list/option_id":          "A",
 	"poll_candidate_list/poll_candidate_ids": "A",
+
+	// profile_image
+	"profile_image/create_timestamp": "A",
+	"profile_image/id":               "A",
+	"profile_image/mediafile_id":     "A",
+	"profile_image/user_id":          "A",
 
 	// projection
 	"projection/content":              "A",
