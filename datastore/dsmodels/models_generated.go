@@ -3548,6 +3548,7 @@ type MeetingUser struct {
 	MotionSubmitterIDs            []int
 	MotionSupporterIDs            []int
 	MotionWorkingGroupSpeakerIDs  []int
+	NotificationState             json.RawMessage
 	Number                        string
 	PersonalNoteIDs               []int
 	SpeakerIDs                    []int
@@ -3590,6 +3591,7 @@ func (b *meetingUserBuilder) lazy(ds *Fetch, id int) *MeetingUser {
 	ds.MeetingUser_MotionSubmitterIDs(id).Lazy(&c.MotionSubmitterIDs)
 	ds.MeetingUser_MotionSupporterIDs(id).Lazy(&c.MotionSupporterIDs)
 	ds.MeetingUser_MotionWorkingGroupSpeakerIDs(id).Lazy(&c.MotionWorkingGroupSpeakerIDs)
+	ds.MeetingUser_NotificationState(id).Lazy(&c.NotificationState)
 	ds.MeetingUser_Number(id).Lazy(&c.Number)
 	ds.MeetingUser_PersonalNoteIDs(id).Lazy(&c.PersonalNoteIDs)
 	ds.MeetingUser_SpeakerIDs(id).Lazy(&c.SpeakerIDs)

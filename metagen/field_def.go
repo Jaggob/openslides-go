@@ -859,6 +859,7 @@ var RestrictionModes = map[string]string{
 	"meeting_user/motion_submitter_ids":             "A",
 	"meeting_user/motion_supporter_ids":             "A",
 	"meeting_user/motion_working_group_speaker_ids": "A",
+	"meeting_user/notification_state":               "A",
 	"meeting_user/number":                           "A",
 	"meeting_user/speaker_ids":                      "A",
 	"meeting_user/structure_level_ids":              "A",

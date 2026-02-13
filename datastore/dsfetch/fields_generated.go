@@ -2318,6 +2318,15 @@ func (r *Fetch) MeetingUser_MotionWorkingGroupSpeakerIDs(meetingUserID int) *Val
 	return &ValueIntSlice{fetch: r, key: key}
 }
 
+func (r *Fetch) MeetingUser_NotificationState(meetingUserID int) *ValueJSON {
+	key, err := dskey.FromParts("meeting_user", meetingUserID, "notification_state")
+	if err != nil {
+		return &ValueJSON{err: err}
+	}
+
+	return &ValueJSON{fetch: r, key: key}
+}
+
 func (r *Fetch) MeetingUser_Number(meetingUserID int) *ValueString {
 	key, err := dskey.FromParts("meeting_user", meetingUserID, "number")
 	if err != nil {
