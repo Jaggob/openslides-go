@@ -194,6 +194,7 @@ var RelationFields = map[string]string{
 // there relate to.
 var RelationListFields = map[string]string{
 	"agenda_item/child_ids":                                    "agenda_item/parent_id",
+	"agenda_item/history_entry_ids":                            "history_entry/model_id",
 	"agenda_item/projection_ids":                               "projection/content_object_id",
 	"agenda_item/tag_ids":                                      "tag/tagged_ids",
 	"assignment/attachment_meeting_mediafile_ids":              "meeting_mediafile/attachment_ids",
@@ -202,6 +203,7 @@ var RelationListFields = map[string]string{
 	"assignment/poll_ids":                                      "poll/content_object_id",
 	"assignment/projection_ids":                                "projection/content_object_id",
 	"assignment/tag_ids":                                       "tag/tagged_ids",
+	"assignment_candidate/history_entry_ids":                   "history_entry/model_id",
 	"chat_group/chat_message_ids":                              "chat_message/chat_group_id",
 	"chat_group/read_group_ids":                                "group/read_chat_group_ids",
 	"chat_group/write_group_ids":                               "group/write_chat_group_ids",
@@ -384,7 +386,7 @@ var RelationListFields = map[string]string{
 // to the fields, there relate to.
 var GenericRelationFields = map[string]map[string]string{
 	"agenda_item/content_object_id":      {"assignment": "agenda_item_id", "motion": "agenda_item_id", "motion_block": "agenda_item_id", "topic": "agenda_item_id"},
-	"history_entry/model_id":             {"assignment": "history_entry_ids", "motion": "history_entry_ids", "user": "history_entry_ids"},
+	"history_entry/model_id":             {"agenda_item": "history_entry_ids", "assignment": "history_entry_ids", "assignment_candidate": "history_entry_ids", "motion": "history_entry_ids", "user": "history_entry_ids"},
 	"list_of_speakers/content_object_id": {"assignment": "list_of_speakers_id", "meeting_mediafile": "list_of_speakers_id", "motion": "list_of_speakers_id", "motion_block": "list_of_speakers_id", "topic": "list_of_speakers_id"},
 	"mediafile/owner_id":                 {"meeting": "mediafile_ids", "organization": "mediafile_ids"},
 	"option/content_object_id":           {"motion": "option_ids", "poll_candidate_list": "option_id", "user": "option_ids"},
@@ -418,6 +420,7 @@ var RestrictionModes = map[string]string{
 	"agenda_item/child_ids":         "A",
 	"agenda_item/closed":            "A",
 	"agenda_item/content_object_id": "A",
+	"agenda_item/history_entry_ids": "A",
 	"agenda_item/id":                "A",
 	"agenda_item/is_hidden":         "A",
 	"agenda_item/is_internal":       "A",
@@ -452,11 +455,12 @@ var RestrictionModes = map[string]string{
 	"assignment/title":                            "A",
 
 	// assignment_candidate
-	"assignment_candidate/assignment_id":   "A",
-	"assignment_candidate/id":              "A",
-	"assignment_candidate/meeting_id":      "A",
-	"assignment_candidate/meeting_user_id": "A",
-	"assignment_candidate/weight":          "A",
+	"assignment_candidate/assignment_id":     "A",
+	"assignment_candidate/history_entry_ids": "A",
+	"assignment_candidate/id":                "A",
+	"assignment_candidate/meeting_id":        "A",
+	"assignment_candidate/meeting_user_id":   "A",
+	"assignment_candidate/weight":            "A",
 
 	// chat_group
 	"chat_group/chat_message_ids": "A",

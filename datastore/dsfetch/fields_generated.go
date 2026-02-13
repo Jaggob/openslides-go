@@ -824,6 +824,15 @@ func (r *Fetch) AgendaItem_Duration(agendaItemID int) *ValueInt {
 	return &ValueInt{fetch: r, key: key}
 }
 
+func (r *Fetch) AgendaItem_HistoryEntryIDs(agendaItemID int) *ValueIntSlice {
+	key, err := dskey.FromParts("agenda_item", agendaItemID, "history_entry_ids")
+	if err != nil {
+		return &ValueIntSlice{err: err}
+	}
+
+	return &ValueIntSlice{fetch: r, key: key}
+}
+
 func (r *Fetch) AgendaItem_ID(agendaItemID int) *ValueInt {
 	key, err := dskey.FromParts("agenda_item", agendaItemID, "id")
 	if err != nil {
@@ -930,6 +939,15 @@ func (r *Fetch) AssignmentCandidate_AssignmentID(assignmentCandidateID int) *Val
 	}
 
 	return &ValueInt{fetch: r, key: key, required: true}
+}
+
+func (r *Fetch) AssignmentCandidate_HistoryEntryIDs(assignmentCandidateID int) *ValueIntSlice {
+	key, err := dskey.FromParts("assignment_candidate", assignmentCandidateID, "history_entry_ids")
+	if err != nil {
+		return &ValueIntSlice{err: err}
+	}
+
+	return &ValueIntSlice{fetch: r, key: key}
 }
 
 func (r *Fetch) AssignmentCandidate_ID(assignmentCandidateID int) *ValueInt {

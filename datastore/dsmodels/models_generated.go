@@ -50,27 +50,29 @@ func (r *Fetch) ActionWorker(ids ...int) *actionWorkerBuilder {
 
 // AgendaItem has all fields from agenda_item.
 type AgendaItem struct {
-	ChildIDs        []int
-	Closed          bool
-	Comment         string
-	ContentObjectID string
-	Duration        int
-	ID              int
-	IsHidden        bool
-	IsInternal      bool
-	ItemNumber      string
-	Level           int
-	MeetingID       int
-	ParentID        dsfetch.Maybe[int]
-	ProjectionIDs   []int
-	TagIDs          []int
-	Type            string
-	Weight          int
-	ChildList       []AgendaItem
-	Meeting         *Meeting
-	Parent          *dsfetch.Maybe[AgendaItem]
-	ProjectionList  []Projection
-	TagList         []Tag
+	ChildIDs         []int
+	Closed           bool
+	Comment          string
+	ContentObjectID  string
+	Duration         int
+	HistoryEntryIDs  []int
+	ID               int
+	IsHidden         bool
+	IsInternal       bool
+	ItemNumber       string
+	Level            int
+	MeetingID        int
+	ParentID         dsfetch.Maybe[int]
+	ProjectionIDs    []int
+	TagIDs           []int
+	Type             string
+	Weight           int
+	ChildList        []AgendaItem
+	HistoryEntryList []HistoryEntry
+	Meeting          *Meeting
+	Parent           *dsfetch.Maybe[AgendaItem]
+	ProjectionList   []Projection
+	TagList          []Tag
 }
 
 type agendaItemBuilder struct {
@@ -84,6 +86,7 @@ func (b *agendaItemBuilder) lazy(ds *Fetch, id int) *AgendaItem {
 	ds.AgendaItem_Comment(id).Lazy(&c.Comment)
 	ds.AgendaItem_ContentObjectID(id).Lazy(&c.ContentObjectID)
 	ds.AgendaItem_Duration(id).Lazy(&c.Duration)
+	ds.AgendaItem_HistoryEntryIDs(id).Lazy(&c.HistoryEntryIDs)
 	ds.AgendaItem_ID(id).Lazy(&c.ID)
 	ds.AgendaItem_IsHidden(id).Lazy(&c.IsHidden)
 	ds.AgendaItem_IsInternal(id).Lazy(&c.IsInternal)
@@ -110,6 +113,18 @@ func (b *agendaItemBuilder) ChildList() *agendaItemBuilder {
 			parent:   b,
 			idField:  "ChildIDs",
 			relField: "ChildList",
+			many:     true,
+		},
+	}
+}
+
+func (b *agendaItemBuilder) HistoryEntryList() *historyEntryBuilder {
+	return &historyEntryBuilder{
+		builder: builder[historyEntryBuilder, *historyEntryBuilder, HistoryEntry]{
+			fetch:    b.fetch,
+			parent:   b,
+			idField:  "HistoryEntryIDs",
+			relField: "HistoryEntryList",
 			many:     true,
 		},
 	}
@@ -347,14 +362,16 @@ func (r *Fetch) Assignment(ids ...int) *assignmentBuilder {
 
 // AssignmentCandidate has all fields from assignment_candidate.
 type AssignmentCandidate struct {
-	AssignmentID  int
-	ID            int
-	MeetingID     int
-	MeetingUserID dsfetch.Maybe[int]
-	Weight        int
-	Assignment    *Assignment
-	Meeting       *Meeting
-	MeetingUser   *dsfetch.Maybe[MeetingUser]
+	AssignmentID     int
+	HistoryEntryIDs  []int
+	ID               int
+	MeetingID        int
+	MeetingUserID    dsfetch.Maybe[int]
+	Weight           int
+	Assignment       *Assignment
+	HistoryEntryList []HistoryEntry
+	Meeting          *Meeting
+	MeetingUser      *dsfetch.Maybe[MeetingUser]
 }
 
 type assignmentCandidateBuilder struct {
@@ -364,6 +381,7 @@ type assignmentCandidateBuilder struct {
 func (b *assignmentCandidateBuilder) lazy(ds *Fetch, id int) *AssignmentCandidate {
 	c := AssignmentCandidate{}
 	ds.AssignmentCandidate_AssignmentID(id).Lazy(&c.AssignmentID)
+	ds.AssignmentCandidate_HistoryEntryIDs(id).Lazy(&c.HistoryEntryIDs)
 	ds.AssignmentCandidate_ID(id).Lazy(&c.ID)
 	ds.AssignmentCandidate_MeetingID(id).Lazy(&c.MeetingID)
 	ds.AssignmentCandidate_MeetingUserID(id).Lazy(&c.MeetingUserID)
@@ -383,6 +401,18 @@ func (b *assignmentCandidateBuilder) Assignment() *assignmentBuilder {
 			parent:   b,
 			idField:  "AssignmentID",
 			relField: "Assignment",
+		},
+	}
+}
+
+func (b *assignmentCandidateBuilder) HistoryEntryList() *historyEntryBuilder {
+	return &historyEntryBuilder{
+		builder: builder[historyEntryBuilder, *historyEntryBuilder, HistoryEntry]{
+			fetch:    b.fetch,
+			parent:   b,
+			idField:  "HistoryEntryIDs",
+			relField: "HistoryEntryList",
+			many:     true,
 		},
 	}
 }
