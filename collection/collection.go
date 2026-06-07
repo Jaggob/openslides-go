@@ -87,6 +87,7 @@ type Field struct {
 	restrictionMode string
 	relation        Relation
 	Required        bool
+	Calculated      bool
 }
 
 // Relation returns the relation object if the Field is a relation. In other
@@ -110,6 +111,7 @@ func (f *Field) UnmarshalYAML(node []byte) error {
 		Type            string `yaml:"type"`
 		RestrictionMode string `yaml:"restriction_mode"`
 		Required        bool   `yaml:"required"`
+		Calculated      bool   `yaml:"calculated"`
 	}
 	if err := yaml.Unmarshal(node, &typer); err != nil {
 		return fmt.Errorf("field object without type: %w", err)
@@ -118,6 +120,7 @@ func (f *Field) UnmarshalYAML(node []byte) error {
 	f.Type = typer.Type
 	f.restrictionMode = typer.RestrictionMode
 	f.Required = typer.Required
+	f.Calculated = typer.Calculated
 
 	var list bool
 	switch typer.Type {

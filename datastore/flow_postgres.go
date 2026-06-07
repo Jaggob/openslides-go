@@ -134,6 +134,7 @@ func (p *FlowPostgres) Get(ctx context.Context, keys ...dskey.Key) (map[dskey.Ke
 func (p *FlowPostgres) getWithConn(ctx context.Context, conn *pgx.Conn, keys ...dskey.Key) (map[dskey.Key][]byte, error) {
 	collectionIDs := make(map[string][]int)
 	collectionFields := make(map[string][]string)
+	requestedCalculatedFields := make(map[string][]string)
 
 	for _, key := range keys {
 		collection := key.Collection()
@@ -141,6 +142,10 @@ func (p *FlowPostgres) getWithConn(ctx context.Context, conn *pgx.Conn, keys ...
 		collectionIDs[collection] = append(collectionIDs[collection], key.ID())
 
 		if field := key.Field(); field != "id" {
+			if calculatedFields[collection][field] {
+				requestedCalculatedFields[collection] = append(requestedCalculatedFields[collection], field)
+				continue
+			}
 			collectionFields[collection] = append(collectionFields[collection], field)
 		}
 	}
@@ -152,6 +157,10 @@ func (p *FlowPostgres) getWithConn(ctx context.Context, conn *pgx.Conn, keys ...
 	for collection := range collectionFields {
 		slices.Sort(collectionFields[collection])
 		collectionFields[collection] = slices.Compact(collectionFields[collection])
+	}
+	for collection := range requestedCalculatedFields {
+		slices.Sort(requestedCalculatedFields[collection])
+		requestedCalculatedFields[collection] = slices.Compact(requestedCalculatedFields[collection])
 	}
 
 	keyValues := make(map[dskey.Key][]byte, len(keys))
@@ -205,6 +214,14 @@ func (p *FlowPostgres) getWithConn(ctx context.Context, conn *pgx.Conn, keys ...
 					return fmt.Errorf("invalid id-key for id %d: %w", id, err)
 				}
 				keyValues[idKey] = []byte(strconv.Itoa(id))
+
+				for _, field := range requestedCalculatedFields[collection] {
+					key, err := dskey.FromParts(collection, id, field)
+					if err != nil {
+						return fmt.Errorf("invalid calculated key %s/%d/%s: %w", collection, id, field, err)
+					}
+					keyValues[key] = nil
+				}
 
 				for i, value := range values {
 					field := fieldDescription[i].Name

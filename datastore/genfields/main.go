@@ -34,6 +34,7 @@ func run() error {
 
 type templateData struct {
 	Collection map[string][]string
+	Calculated map[string]map[string]bool
 }
 
 func parse(path string) (templateData, error) {
@@ -44,9 +45,17 @@ func parse(path string) (templateData, error) {
 
 	td := templateData{
 		Collection: make(map[string][]string),
+		Calculated: make(map[string]map[string]bool),
 	}
 	for collectionName, collection := range inData {
-		for fieldName := range collection.Fields {
+		for fieldName, field := range collection.Fields {
+			if field.Calculated {
+				if td.Calculated[collectionName] == nil {
+					td.Calculated[collectionName] = make(map[string]bool)
+				}
+				td.Calculated[collectionName][fieldName] = true
+				continue
+			}
 			td.Collection[collectionName] = append(td.Collection[collectionName], fieldName)
 		}
 
@@ -62,6 +71,12 @@ package datastore
 var collectionFields = map[string][]string{
 	{{- range $key, $value := .Collection}}
 		"{{$key}}": { {{range $field := $value}} "{{$field}}", {{end}} },
+	{{- end}}
+}
+
+var calculatedFields = map[string]map[string]bool{
+	{{- range $key, $value := .Calculated}}
+		"{{$key}}": { {{range $field, $_ := $value}} "{{$field}}": true, {{end}} },
 	{{- end}}
 }
 `
