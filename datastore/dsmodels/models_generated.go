@@ -1744,6 +1744,7 @@ type Meeting struct {
 	UsersPdfWlanEncryption                       string
 	UsersPdfWlanPassword                         string
 	UsersPdfWlanSsid                             string
+	UsersVoteDelegationsMaxAmount                int
 	WelcomeText                                  string
 	WelcomeTitle                                 string
 	AdminGroup                                   *dsfetch.Maybe[Group]
@@ -2079,6 +2080,7 @@ func (b *meetingBuilder) lazy(ds *Fetch, id int) *Meeting {
 	ds.Meeting_UsersPdfWlanEncryption(id).Lazy(&c.UsersPdfWlanEncryption)
 	ds.Meeting_UsersPdfWlanPassword(id).Lazy(&c.UsersPdfWlanPassword)
 	ds.Meeting_UsersPdfWlanSsid(id).Lazy(&c.UsersPdfWlanSsid)
+	ds.Meeting_UsersVoteDelegationsMaxAmount(id).Lazy(&c.UsersVoteDelegationsMaxAmount)
 	ds.Meeting_WelcomeText(id).Lazy(&c.WelcomeText)
 	ds.Meeting_WelcomeTitle(id).Lazy(&c.WelcomeTitle)
 	return &c
@@ -3480,7 +3482,7 @@ type MeetingUser struct {
 	SpeakerIDs                    []int
 	StructureLevelIDs             []int
 	UserID                        int
-	VoteDelegatedToID             dsfetch.Maybe[int]
+	VoteDelegatedToIDs            []int
 	VoteDelegationsFromIDs        []int
 	VoteWeight                    decimal.Decimal
 	ActingBallotList              []PollBallot
@@ -3499,7 +3501,7 @@ type MeetingUser struct {
 	SpeakerList                   []Speaker
 	StructureLevelList            []StructureLevel
 	User                          *User
-	VoteDelegatedTo               *dsfetch.Maybe[MeetingUser]
+	VoteDelegatedToList           []MeetingUser
 	VoteDelegationsFromList       []MeetingUser
 }
 
@@ -3530,7 +3532,7 @@ func (b *meetingUserBuilder) lazy(ds *Fetch, id int) *MeetingUser {
 	ds.MeetingUser_SpeakerIDs(id).Lazy(&c.SpeakerIDs)
 	ds.MeetingUser_StructureLevelIDs(id).Lazy(&c.StructureLevelIDs)
 	ds.MeetingUser_UserID(id).Lazy(&c.UserID)
-	ds.MeetingUser_VoteDelegatedToID(id).Lazy(&c.VoteDelegatedToID)
+	ds.MeetingUser_VoteDelegatedToIDs(id).Lazy(&c.VoteDelegatedToIDs)
 	ds.MeetingUser_VoteDelegationsFromIDs(id).Lazy(&c.VoteDelegationsFromIDs)
 	ds.MeetingUser_VoteWeight(id).Lazy(&c.VoteWeight)
 	return &c
@@ -3731,13 +3733,14 @@ func (b *meetingUserBuilder) User() *userBuilder {
 	}
 }
 
-func (b *meetingUserBuilder) VoteDelegatedTo() *meetingUserBuilder {
+func (b *meetingUserBuilder) VoteDelegatedToList() *meetingUserBuilder {
 	return &meetingUserBuilder{
 		builder: builder[meetingUserBuilder, *meetingUserBuilder, MeetingUser]{
 			fetch:    b.fetch,
 			parent:   b,
-			idField:  "VoteDelegatedToID",
-			relField: "VoteDelegatedTo",
+			idField:  "VoteDelegatedToIDs",
+			relField: "VoteDelegatedToList",
+			many:     true,
 		},
 	}
 }
