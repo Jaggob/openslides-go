@@ -1,4 +1,4 @@
 [submodule "openslides-meta"]
 	path = meta
 	url = https://github.com/Jaggob/openslides-meta.git
-	branch = feature/vote
+	branch = feature/vote-delegation
